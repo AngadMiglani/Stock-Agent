@@ -49,12 +49,12 @@ def get_stock():
     except Exception as e:
         return jsonify({"error" : str(e)}), 500
     
-@app.route("/read_demo")
+@app.route("/read_watchlist")
 def read_watchlist_route():
     rows = read_watchlist()
     return jsonify({"rows" : rows})
 
-@app.route("/write_watchlist")
+@app.route("/write_demo")
 def write_demo_route():
     result = write_demo_value("Hello")
     return jsonify({"status": "ok", "updatedRange": result.get("updatedRange")})
