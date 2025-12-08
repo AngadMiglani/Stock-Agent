@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request #request reads query params
 import yfinance as yf
-from sheets_client import read_watchlist
+from sheets_client import read_watchlist, write_demo_value
 
 
 # Create the Flask app
@@ -49,10 +49,16 @@ def get_stock():
     except Exception as e:
         return jsonify({"error" : str(e)}), 500
     
-@app.route("/read_watchlist")
+@app.route("/read_demo")
 def read_watchlist_route():
     rows = read_watchlist()
     return jsonify({"rows" : rows})
+
+@app.route("/write_watchlist")
+def write_demo_route():
+    result = write_demo_value("Hello")
+    return jsonify({"status": "ok", "updatedRange": result.get("updatedRange")})
+
 # Only run the server if this file is executed directly
 if __name__ == "__main__":
     app.run(debug=True)

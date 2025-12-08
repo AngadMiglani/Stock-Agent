@@ -32,5 +32,26 @@ def read_watchlist():
     rows = result.get("values", [])  # 3) safely get the rows list
     return rows
 
+def write_demo_value(value: str):
+    """
+    Writes a single value into cell D2 of the Watchlist sheet.
+    This is just for testing that writes work.
+    """
+    service = get_service()
+
+    range_name = "Watchlist!D2"  # column D, row 2
+    body = {
+        "values": [[value]]  # 2D array: list of rows, each row is a list of cells
+    }
+
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_name,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
+
+    return result
+
     # TODO: create a result = service.spreadsheets().values().get(...)
     # TODO: return the rows
