@@ -53,5 +53,41 @@ def write_demo_value(value: str):
 
     return result
 
+
+def write_watchlist_update(
+    row_index: int,
+    current_price,
+    previous_close,
+    day_change_pct,
+    ai_summary: str,
+    timestamp: str,
+):
+    """
+    Writes metrics + AI summary into columns D–H for a given row in the Watchlist sheet.
+
+    row_index is the actual sheet row number (2 = first data row).
+
+    D = CurrentPrice
+    E = PreviousClose
+    F = DayChangePct
+    G = AI_Summary
+    H = LastUpdated
+    """
+    service = get_service()
+
+    range_name = f"Watchlist!D{row_index}:H{row_index}"
+    body = {
+        "values": [[current_price, previous_close, day_change_pct, ai_summary, timestamp]]
+    }
+
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_name,
+        valueInputOption="RAW",
+        body=body,
+    ).execute()
+
+    return result
+
     # TODO: create a result = service.spreadsheets().values().get(...)
     # TODO: return the rows
