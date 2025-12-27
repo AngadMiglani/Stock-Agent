@@ -63,7 +63,7 @@ def write_watchlist_update(
     timestamp: str,
 ):
     """
-    Writes metrics + AI summary into columns D–H for a given row in the Watchlist sheet.
+    Writes metrics + AI summary into columns D-H for a given row in the Watchlist sheet.
 
     row_index is the actual sheet row number (2 = first data row).
 
@@ -91,3 +91,34 @@ def write_watchlist_update(
 
     # TODO: create a result = service.spreadsheets().values().get(...)
     # TODO: return the rows
+def read_portfolio():
+    """
+    Reads Portfolio!A2:C (Ticker, Company_Name, Entry_Notes)
+    """
+    service = get_service()
+    result = service.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range="Portfolio!A2:C"
+    ).execute()
+    return result.get("values", [])
+
+
+def write_portfolio_update(row_index: int, risk_summary: str, risk_flag: str, timestamp: str):
+    """
+    Writes Portfolio columns D–F for a given row:
+    D = Risk_Summary
+    E = Risk_Flag
+    F = LastUpdated
+    """
+    service = get_service()
+    range_name = f"Portfolio!D{row_index}:F{row_index}"
+    body = {"values": [[risk_summary, risk_flag, timestamp]]}
+
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_name,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
+
+    return result
